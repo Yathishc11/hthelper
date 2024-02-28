@@ -4,6 +4,9 @@ import streamlit as st
 import pandas as pd
 from streamlit_gsheets import GSheetsConnection
 
+# Set the page layout to wide
+st.set_page_config(layout="wide")
+
 # Assuming you have your DataFrame and other variables defined already
 sheet_url = "https://docs.google.com/spreadsheets/d/1bRV811WTUnzpWbip6otEONs4hH-i7qXCsKhwAr6O46A/edit#gid=0"
 # Create a connection object.
@@ -91,13 +94,14 @@ try:
                 bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df[selected_finish] == True]
 
             # Select only required columns for display
-            display_columns = ['MP name', 'Email', 'MP level', 'Phone No.']
+            display_columns = ['MP name', 'Email', 'MP level', 'Phone No.', 'Notes']
             bounding_box_filtered_df = bounding_box_filtered_df[display_columns]
 
             # Display filtered results
             if not bounding_box_filtered_df.empty:
                 st.write("MP Recommendation")
-                st.write(bounding_box_filtered_df)
+                st.table(bounding_box_filtered_df)
+
             else:
                 st.write("No data found matching the criteria.")
 
