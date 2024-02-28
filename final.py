@@ -99,8 +99,9 @@ try:
 
             # Display filtered results
             if not bounding_box_filtered_df.empty:
-                st.write("MP Recommendation")
+                st.write("MP's Recommended :face_with_monocle:")
                 st.table(bounding_box_filtered_df)
+                st.write("Select 1-2 MPs and cross check the selection with Sara :woman:")
 
             else:
                 st.write("No data found matching the criteria.")
