@@ -31,7 +31,7 @@ selected_process = st.selectbox('Please select the Process', process)
 selected_material = st.selectbox('Please select the Material',
                                  [material for material in process_sheet_df[selected_process].dropna()])
 
-selected_region = st.radio("Please select the Region", ["United States", "India", "China"])
+selected_region = st.radio("Please select the Region", ["United States"])
 
 try:
     with st.form("parameters"):
