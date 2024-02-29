@@ -22,9 +22,9 @@ main_df = pd.DataFrame(main)
 process_sheet_df = pd.DataFrame(process_sheet)
 finish_df = pd.DataFrame(finish_sheet)
 # converting max X, max Y, max Z columns to floats so that they can be used for comparisons
-main_df['max X'] = pd.to_numeric(main_df['max X'])
-main_df['max Y'] = pd.to_numeric(main_df['max Y'])
-main_df['max Z'] = pd.to_numeric(main_df['max Z'])
+main_df['Bounding box [x]'] = pd.to_numeric(main_df['Bounding box [x]'])
+main_df['Bounding box [y]'] = pd.to_numeric(main_df['Bounding box [y]'])
+main_df['Bounding box [z]'] = pd.to_numeric(main_df['Bounding box [z]'])
 
 process = list(process_sheet_df.columns.values[1:])
 selected_process = st.selectbox('Please select the Process', process)
@@ -62,12 +62,12 @@ try:
 
         if submitted:
             # Filter data based on the selected process
-            process_filtered_df = main_df[main_df["process name"] == selected_process]
+            process_filtered_df = main_df[main_df["Process offered"] == selected_process]
 
             # Apply the bounding box filter
-            bounding_box_query = (process_filtered_df["max X"] >= float(bounding_box_x)) & \
-                                 (process_filtered_df["max Y"] >= float(bounding_box_y)) & \
-                                 (process_filtered_df["max Z"] >= float(bounding_box_z))
+            bounding_box_query = (process_filtered_df["Bounding box [x]"] >= float(bounding_box_x)) & \
+                                 (process_filtered_df["Bounding box [y]"] >= float(bounding_box_y)) & \
+                                 (process_filtered_df["Bounding box [z]"] >= float(bounding_box_z))
             bounding_box_filtered_df = process_filtered_df[bounding_box_query]
 
             # Apply checkbox conditions
