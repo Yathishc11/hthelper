@@ -8,7 +8,7 @@ from streamlit_gsheets import GSheetsConnection
 st.set_page_config(layout="wide")
 
 # Assuming you have your DataFrame and other variables defined already
-sheet_url = "https://docs.google.com/spreadsheets/d/1bRV811WTUnzpWbip6otEONs4hH-i7qXCsKhwAr6O46/edit#gid=0"
+sheet_url = "https://docs.google.com/spreadsheets/d/1bRV811WTUnzpWbip6otEONs4hH-i7qXCsKhwAr6O46A/edit#gid=0"
 # Create a connection object.
 conn = st.connection("gsheets", type=GSheetsConnection)
 data = conn.read(spreadsheet=sheet_url)
