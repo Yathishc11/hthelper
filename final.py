@@ -94,7 +94,7 @@ try:
                 bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df[selected_finish] == True]
 
             # Select only required columns for display
-            display_columns = ['MP name', 'Email', 'Phone No.', 'MP level', 'Notes']
+            display_columns = ['MP name', 'MP level', 'Email', 'Phone No.', 'Notes']
             bounding_box_filtered_df = bounding_box_filtered_df[display_columns]
 
             # Display filtered results
