@@ -12,7 +12,7 @@ sheet_url = "https://docs.google.com/spreadsheets/d/1bRV811WTUnzpWbip6otEONs4hH-
 # Create a connection object.
 conn = st.connection("gsheets", type=GSheetsConnection)
 data = conn.read(spreadsheet=sheet_url)
-st.title('HT Helper')
+st.title('MP Vision')
 
 main = conn.read(spreadsheet=sheet_url, worksheet="0")
 process_sheet = conn.read(spreadsheet=sheet_url, worksheet="1240509380")
