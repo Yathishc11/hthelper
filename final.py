@@ -28,6 +28,8 @@ main_df['Bounding box [z]'] = pd.to_numeric(main_df['Bounding box [z]'])
 
 process = list(process_sheet_df.columns.values[1:])
 selected_process = st.selectbox('Please select the Process', process)
+selected_material = st.selectbox('Please select the Material',
+                                 [material for material in process_sheet_df[selected_process].dropna()])
 
 selected_region = st.radio("Please select the Region", ["United States"])
 
@@ -61,7 +63,7 @@ try:
         if submitted:
             # Filter data based on the selected process
             process_filtered_df = main_df[main_df["Process offered"] == selected_process]
-            material_filtered_df = process_filtered_df[process_filtered_df["selected_material"] == selected_material]
+            material_filtered_df = process_filtered_df[process_filtered_df["Material"] == selected_material]
 
             # Apply the bounding box filter
             bounding_box_query = (process_filtered_df["Bounding box [x]"] >= float(bounding_box_x)) & \
