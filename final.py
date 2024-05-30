@@ -63,6 +63,7 @@ try:
         if submitted:
             # Filter data based on the selected process
             process_filtered_df = main_df[main_df["Process offered"] == selected_process]
+            material_filtered_df = process_filtered_df[process_filtered_df["Material"] == selected_material]
 
             # Apply the bounding box filter
             bounding_box_query = (process_filtered_df["Bounding box [x]"] >= float(bounding_box_x)) & \
