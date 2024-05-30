@@ -28,8 +28,6 @@ main_df['Bounding box [z]'] = pd.to_numeric(main_df['Bounding box [z]'])
 
 process = list(process_sheet_df.columns.values[1:])
 selected_process = st.selectbox('Please select the Process', process)
-selected_material = st.selectbox('Please select the Material',
-                                 [material for material in process_sheet_df[selected_process].dropna()])
 
 selected_region = st.radio("Please select the Region", ["United States"])
 
