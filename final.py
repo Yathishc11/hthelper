@@ -64,13 +64,16 @@ try:
             # Filter data based on the selected process
             process_filtered_df = main_df[main_df["Process offered"] == selected_process]
 
-            # Apply the bounding box filter
-            bounding_box_query = (process_filtered_df["Bounding box [x]"] >= float(bounding_box_x)) & \
-                                 (process_filtered_df["Bounding box [y]"] >= float(bounding_box_y)) & \
-                                 (process_filtered_df["Bounding box [z]"] >= float(bounding_box_z))
-            bounding_box_filtered_df = process_filtered_df[bounding_box_query]
+            material_filtered_mp = process_filtered_df[process_filtered_df[selected_material]==True]
+            print(material_filtered_mp)
 
-            # Apply checkbox conditions
+            # Apply the bounding box filter
+            bounding_box_query = (material_filtered_mp["Bounding box [x]"] >= float(bounding_box_x)) & \
+                                 (material_filtered_mp["Bounding box [y]"] >= float(bounding_box_y)) & \
+                                 (material_filtered_mp["Bounding box [z]"] >= float(bounding_box_z))
+            bounding_box_filtered_df = material_filtered_mp[bounding_box_query]
+
+            # Apply checkboxconditions
             if hardware_install:
                 bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["hardware install"] == True]
 
