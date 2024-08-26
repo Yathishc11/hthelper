@@ -47,7 +47,7 @@ try:
         Multi_Axis_Machine = st.checkbox("Multi Axis Machine")
         cmm_inspection = st.checkbox("CMM inspection")
         Tight_Tolerance_Plastics = st.checkbox("Tight Tolerance Plastics")
-        tight_tolerance_metals = st.checkbox("tight tolerance metals")
+        Tight_Tolerance_Metals = st.checkbox("Tight Tolerance Metals")
         EDM = st.checkbox("EDM")
 
         no_post_process = st.checkbox("No post process")
