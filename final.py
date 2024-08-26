@@ -78,7 +78,7 @@ try:
                 bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Hardware Install"] == True]
 
             if Multi_Axis_Machine:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Multi Axis Machine"] == True]
+                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Multi Axis Machine"] == "TRUE"]
 
             if cmm_inspection:
                 bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["CMM inspection"] == True]
@@ -86,8 +86,8 @@ try:
             if Tight_Tolerance_Plastics:
                 bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Tight Tolerance Plastics"] == True]
               
-            if tight_tolerance_metals:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["tight tolerance metals"] == True]
+            if Tight_Tolerance_Metals:
+                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Tight Tolerance Metals"] == "TRUE"]
 
             if EDM:
                 bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["EDM"] == True]
