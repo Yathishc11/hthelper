@@ -43,12 +43,12 @@ try:
         with col3:
             bounding_box_z = st.text_input("Dim in Z (in mm)", None, key="z_input", placeholder=0)
 
-        hardware_install = st.checkbox("hardware install")
-        multi_axis_machine = st.checkbox("multi axis machine")
+        Hardware_Install = st.checkbox("Hardware Install")
+        Multi_Axis_Machine = st.checkbox("Multi Axis Machine")
         cmm_inspection = st.checkbox("CMM inspection")
-        tight_tolerance_plastics = st.checkbox("tight tolerance plastics")
-        tight_tolerance_metals = st.checkbox("tight tolerance metals")
-        edm = st.checkbox("EDM")
+        Tight_Tolerance_Plastics = st.checkbox("Tight Tolerance Plastics")
+        Tight_Tolerance_Metals = st.checkbox("Tight Tolerance Metals")
+        EDM = st.checkbox("EDM")
 
         no_post_process = st.checkbox("No post process")
 
@@ -75,19 +75,19 @@ try:
 
             # Apply checkboxconditions
             if hardware_install:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["hardware install"] == True]
+                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Hardware Install"] == True]
 
             if multi_axis_machine:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["multi axis machine"] == True]
+                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Multi Axis Machine"] == True]
 
             if cmm_inspection:
                 bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["CMM inspection"] == True]
 
             if tight_tolerance_plastics:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["tight tolerance plastics"] == True]
+                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Tight Tolerance Plastics"] == True]
 
             if tight_tolerance_metals:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["tight tolerance metals"] == True]
+                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Tight Tolerance Metals"] == True]
 
             if edm:
                 bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["EDM"] == True]
