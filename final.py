@@ -74,22 +74,22 @@ try:
             bounding_box_filtered_df = material_filtered_mp[bounding_box_query]
 
             # Apply checkboxconditions
-            if hardware_install:
+            if Hardware_Install:
                 bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Hardware Install"] == True]
 
-            if multi_axis_machine:
+            if Multi_Axis_Machine:
                 bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Multi Axis Machine"] == True]
 
             if cmm_inspection:
                 bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["CMM inspection"] == True]
 
-            if tight_tolerance_plastics:
+            if Tight_Tolerance_Plastics:
                 bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Tight Tolerance Plastics"] == True]
 
-            if tight_tolerance_metals:
+            if Tight_Tolerance_Metals:
                 bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Tight Tolerance Metals"] == True]
 
-            if edm:
+            if EDM:
                 bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["EDM"] == True]
 
             # Apply post process filter if "No post process" is not checked and a post process is selected
