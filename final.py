@@ -12,7 +12,7 @@ sheet_url = "https://docs.google.com/spreadsheets/d/1bRV811WTUnzpWbip6otEONs4hH-
 # Create a connection object.
 conn = st.connection("gsheets", type=GSheetsConnection)
 data = conn.read(spreadsheet=sheet_url)
-st.title('MP Vision')
+st.title('HT Helper')
 
 main = conn.read(spreadsheet=sheet_url, worksheet="0")
 process_sheet = conn.read(spreadsheet=sheet_url, worksheet="1240509380")
@@ -43,12 +43,12 @@ try:
         with col3:
             bounding_box_z = st.text_input("Dim in Z (in mm)", None, key="z_input", placeholder=0)
 
-        Hardware_Install = st.checkbox("Hardware Install")
-        Multi_Axis_Machine = st.checkbox("Multi Axis Machine")
+        hardware_install = st.checkbox("hardware install")
+        multi_axis_machine = st.checkbox("multi axis machine")
         cmm_inspection = st.checkbox("CMM inspection")
-        Tight_Tolerance_Plastics = st.checkbox("Tight Tolerance Plastics")
-        Tight_Tolerance_Metals = st.checkbox("Tight Tolerance Metals")
-        EDM = st.checkbox("EDM")
+        tight_tolerance_plastics = st.checkbox("tight tolerance plastics")
+        tight_tolerance_metals = st.checkbox("tight tolerance metals")
+        edm = st.checkbox("EDM")
 
         no_post_process = st.checkbox("No post process")
 
@@ -64,32 +64,29 @@ try:
             # Filter data based on the selected process
             process_filtered_df = main_df[main_df["Process offered"] == selected_process]
 
-            material_filtered_mp = process_filtered_df[process_filtered_df[selected_material]==True]
-            print(material_filtered_mp)
-
             # Apply the bounding box filter
-            bounding_box_query = (material_filtered_mp["Bounding box [x]"] >= float(bounding_box_x)) & \
-                                 (material_filtered_mp["Bounding box [y]"] >= float(bounding_box_y)) & \
-                                 (material_filtered_mp["Bounding box [z]"] >= float(bounding_box_z))
-            bounding_box_filtered_df = material_filtered_mp[bounding_box_query]
+            bounding_box_query = (process_filtered_df["Bounding box [x]"] >= float(bounding_box_x)) & \
+                                 (process_filtered_df["Bounding box [y]"] >= float(bounding_box_y)) & \
+                                 (process_filtered_df["Bounding box [z]"] >= float(bounding_box_z))
+            bounding_box_filtered_df = process_filtered_df[bounding_box_query]
 
-            # Apply checkboxconditions
-            if Hardware_Install:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Hardware Install"] == True]
+            # Apply checkbox conditions
+            if hardware_install:
+                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["hardware install"] == True]
 
-            if Multi_Axis_Machine:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Multi Axis Machine"] == "TRUE"]
+            if multi_axis_machine:
+                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["multi axis machine"] == True]
 
             if cmm_inspection:
                 bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["CMM inspection"] == True]
 
-            if Tight_Tolerance_Plastics:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Tight Tolerance Plastics"] == True]
-              
-            if Tight_Tolerance_Metals:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Tight Tolerance Metals"] == "TRUE"]
+            if tight_tolerance_plastics:
+                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["tight tolerance plastics"] == True]
 
-            if EDM:
+            if tight_tolerance_metals:
+                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["tight tolerance metals"] == True]
+
+            if edm:
                 bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["EDM"] == True]
 
             # Apply post process filter if "No post process" is not checked and a post process is selected
@@ -97,7 +94,7 @@ try:
                 bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df[selected_finish] == True]
 
             # Select only required columns for display
-            display_columns = ['MP name', 'Email', 'Phone No.', 'Notes']
+            display_columns = ['MP name', 'Email', 'MP level', 'Phone No.', 'Notes']
             bounding_box_filtered_df = bounding_box_filtered_df[display_columns]
 
             # Display filtered results
