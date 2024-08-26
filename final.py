@@ -47,7 +47,7 @@ try:
         Multi_Axis_Machine = st.checkbox("Multi Axis Machine")
         cmm_inspection = st.checkbox("CMM inspection")
         Tight_Tolerance_Plastics = st.checkbox("Tight Tolerance Plastics")
-        Tight_Tolerance_Metals = st.checkbox("Tight Tolerance Metals")
+        tight_tolerance_metals = st.checkbox("tight tolerance metals")
         EDM = st.checkbox("EDM")
 
         no_post_process = st.checkbox("No post process")
@@ -85,9 +85,9 @@ try:
 
             if Tight_Tolerance_Plastics:
                 bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Tight Tolerance Plastics"] == True]
-
-            if Tight_Tolerance_Metals:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Tight Tolerance Metals"] == True]
+              
+            if tight_tolerance_metals:
+                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["tight tolerance metals"] == True]
 
             if EDM:
                 bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["EDM"] == True]
