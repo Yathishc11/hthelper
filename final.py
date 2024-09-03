@@ -97,6 +97,9 @@ try:
             display_columns = ['MP name', 'Email', 'MP level', 'Phone No.', 'Notes']
             bounding_box_filtered_df = bounding_box_filtered_df[display_columns]
 
+          # Limit the output to only 4 results
+            bounding_box_filtered_df = bounding_box_filtered_df.sample(frac=1).head(4)
+
             # Display filtered results
             if not bounding_box_filtered_df.empty:
                 st.write("MP's Recommended :face_with_monocle:")
