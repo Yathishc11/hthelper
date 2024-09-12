@@ -1,4 +1,6 @@
 import ssl
+import struct
+
 ssl._create_default_https_context = ssl._create_unverified_context
 import streamlit as st
 import pandas as pd
@@ -12,7 +14,7 @@ sheet_url = "https://docs.google.com/spreadsheets/d/1bRV811WTUnzpWbip6otEONs4hH-
 # Create a connection object.
 conn = st.connection("gsheets", type=GSheetsConnection)
 data = conn.read(spreadsheet=sheet_url)
-st.title('HT Helper')
+st.title('MP selector')
 
 main = conn.read(spreadsheet=sheet_url, worksheet="0")
 process_sheet = conn.read(spreadsheet=sheet_url, worksheet="1240509380")
@@ -43,12 +45,29 @@ try:
         with col3:
             bounding_box_z = st.text_input("Dim in Z (in mm)", None, key="z_input", placeholder=0)
 
-        hardware_install = st.checkbox("hardware install")
-        multi_axis_machine = st.checkbox("multi axis machine")
-        cmm_inspection = st.checkbox("CMM inspection")
-        tight_tolerance_plastics = st.checkbox("tight tolerance plastics")
-        tight_tolerance_metals = st.checkbox("tight tolerance metals")
-        edm = st.checkbox("EDM")
+        col1, col2, col3 = st.columns(3)
+        with st.expander("Machining Maestros"):
+            edm = st.checkbox("EDM")
+            Loves_Plastic = st.checkbox("Loves Plastic")
+            Hard_Metals = st.checkbox("Hard Metals")
+            Rare_Materials = st.checkbox("Rare Materials")
+            tight_tolerance_plastics = st.checkbox("tight tolerance plastics")
+            tight_tolerance_metals = st.checkbox("tight tolerance metals")
+
+        with st.expander("Speedy Squad"):
+            Quick_LT = st.checkbox("Quick LT")
+            Production_Qty = st.checkbox("Production Qty")
+            Complex_Job = st.checkbox("Complex Job")
+            hardware_install = st.checkbox("hardware install")
+            multi_axis_machine = st.checkbox("multi axis machine")
+            Quick_SLA = st.checkbox("Quick SLA")
+
+        with st.expander("Compliance Cowboys"):
+            cmm_inspection = st.checkbox("CMM inspection")
+            ISO_9001 = st. checkbox("ISO 9001")
+            AS9100D = st.checkbox("AS9100D")
+            ISO_13485 = st.checkbox("ISO 13485")
+            ITAR = st.checkbox("ITAR")
 
         no_post_process = st.checkbox("No post process")
 
@@ -63,12 +82,13 @@ try:
         if submitted:
             # Filter data based on the selected process
             process_filtered_df = main_df[main_df["Process offered"] == selected_process]
+            material_filtered_mp = process_filtered_df[process_filtered_df[selected_material] == True]
 
             # Apply the bounding box filter
-            bounding_box_query = (process_filtered_df["Bounding box [x]"] >= float(bounding_box_x)) & \
-                                 (process_filtered_df["Bounding box [y]"] >= float(bounding_box_y)) & \
-                                 (process_filtered_df["Bounding box [z]"] >= float(bounding_box_z))
-            bounding_box_filtered_df = process_filtered_df[bounding_box_query]
+            bounding_box_query = (material_filtered_mp["Bounding box [x]"] >= float(bounding_box_x)) & \
+                                 (material_filtered_mp["Bounding box [y]"] >= float(bounding_box_y)) & \
+                                 (material_filtered_mp["Bounding box [z]"] >= float(bounding_box_z))
+            bounding_box_filtered_df = material_filtered_mp[bounding_box_query]
 
             # Apply checkbox conditions
             if hardware_install:
@@ -89,6 +109,39 @@ try:
             if edm:
                 bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["EDM"] == True]
 
+            if Quick_LT:
+                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Quick LT"] == True]
+
+            if Production_Qty:
+                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Production Qty"] == True]
+
+            if Complex_Job:
+                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Complex Job"] == True]
+
+            if Loves_Plastic:
+                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Loves Plastic"] == True]
+
+            if Hard_Metals:
+                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Hard Metals"] == True]
+
+            if Rare_Materials:
+                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Rare Materials"] == Trues]
+
+            if Quick_SLA:
+                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Quick SLA"] == True]
+
+            if ISO_9001:
+                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["ISO 9001"] == True]
+
+            if AS9100D:
+                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["AS9100D"] == True]
+
+            if ISO_13485:
+                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["ISO 13485"] == True]
+
+            if ITAR:
+                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["ITAR"] == True]
+
             # Apply post process filter if "No post process" is not checked and a post process is selected
             if selected_finish:
                 bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df[selected_finish] == True]
@@ -97,7 +150,7 @@ try:
             display_columns = ['MP name', 'Email', 'Phone No.', 'Notes']
             bounding_box_filtered_df = bounding_box_filtered_df[display_columns]
 
-          # Limit the output to only 4 results
+            # Limit the output to only 4 results
             bounding_box_filtered_df = bounding_box_filtered_df.sample(frac=1).head(4)
 
             # Display filtered results
