@@ -162,6 +162,19 @@ try:
             else:
                 st.write("No data found matching the criteria.")
 
+# Independent Search Bar for MP Name and Email
+st.write("### Search MP by Name")
+mp_name_search = st.text_input("Enter MP name to search")
+
+# Search for the MP email by name (operates separately)
+if mp_name_search:
+    search_result = main_df[main_df['MP name'].str.contains(mp_name_search, case=False)]
+    if not search_result.empty:
+        st.write(f"Email for {mp_name_search}:")
+        st.write(search_result[['MP name', 'Email']])
+    else:
+        st.write(f"No MP found with the name: {mp_name_search}")
+
 except Exception as e:
     st.write("An error occurred:", e)
     st.write("Please input the parameters correctly")
