@@ -125,7 +125,7 @@ try:
                 bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Hard Metals"] == True]
 
             if Rare_Materials:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Rare Materials"] == Trues]
+                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Rare Materials"] == True]
 
             if Quick_SLA:
                 bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Quick SLA"] == True]
