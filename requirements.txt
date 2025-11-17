@@ -19,3 +19,5 @@ mdurl==0.1.2
 packaging==23.2
 python-dateutil==2.9.0
 requests==2.32.3
+
+st-gsheets-connection==0.0.3
