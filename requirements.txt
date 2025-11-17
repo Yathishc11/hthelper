@@ -48,7 +48,7 @@ smmap==5.0.1
 sql_metadata==2.10.0
 sqlparse==0.4.4
 st-gsheets-connection==0.0.3
-streamlit==1.29.0
+streamlit>=1.38
 tenacity==8.2.3
 toml==0.10.2
 toolz==0.12.0
