@@ -1,182 +1,68 @@
 import ssl
-import struct
-
-ssl._create_default_https_context = ssl._create_unverified_context
 import streamlit as st
 import pandas as pd
-from streamlit_gsheets import GSheetsConnection
+import gspread
+from google.oauth2.service_account import Credentials
 
-# Set the page layout to wide
+ssl._create_default_https_context = ssl._create_unverified_context
+
 st.set_page_config(layout="wide")
+st.title("MP Selector")
 
-# Assuming you have your DataFrame and other variables defined already
-sheet_url = "https://docs.google.com/spreadsheets/d/1bRV811WTUnzpWbip6otEONs4hH-i7qXCsKhwAr6O46A/edit#gid=0"
-# Create a connection object.
-conn = st.connection("gsheets", type=GSheetsConnection)
-data = conn.read(spreadsheet=sheet_url)
-st.title('MP selector')
+# Google Sheets setup
+SCOPE = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive"
+]
 
-main = conn.read(spreadsheet=sheet_url, worksheet="0")
-process_sheet = conn.read(spreadsheet=sheet_url, worksheet="1240509380")
-finish_sheet = conn.read(spreadsheet=sheet_url, worksheet="1059488238")
-# pushing the data to a dataframe
-main_df = pd.DataFrame(main)
-process_sheet_df = pd.DataFrame(process_sheet)
-finish_df = pd.DataFrame(finish_sheet)
-# converting max X, max Y, max Z columns to floats so that they can be used for comparisons
-main_df['Bounding box [x]'] = pd.to_numeric(main_df['Bounding box [x]'])
-main_df['Bounding box [y]'] = pd.to_numeric(main_df['Bounding box [y]'])
-main_df['Bounding box [z]'] = pd.to_numeric(main_df['Bounding box [z]'])
+# Load service account from Streamlit secrets
+creds = Credentials.from_service_account_info(
+    st.secrets["gcp_service_account"],
+    scopes=SCOPE
+)
 
-process = list(process_sheet_df.columns.values[1:])
-selected_process = st.selectbox('Please select the Process', process)
-selected_material = st.selectbox('Please select the Material',
-                                 [material for material in process_sheet_df[selected_process].dropna()])
+client = gspread.authorize(creds)
+
+# Google Sheet URL
+sheet_url = "https://docs.google.com/spreadsheets/d/1bRV811WTUnzpWbip6otEONs4hH-i7qXCsKhwAr6O46A"
+
+# Load worksheets
+sheet = client.open_by_url(sheet_url)
+
+main_df = pd.DataFrame(sheet.get_worksheet(0).get_all_records())
+process_sheet_df = pd.DataFrame(sheet.get_worksheet_by_id(1240509380).get_all_records())
+finish_df = pd.DataFrame(sheet.get_worksheet_by_id(1059488238).get_all_records())
+
+# Convert bounding box columns
+for col in ["Bounding box [x]", "Bounding box [y]", "Bounding box [z]"]:
+    main_df[col] = pd.to_numeric(main_df[col], errors="coerce")
+
+# UI selections
+process = list(process_sheet_df.columns.values)[1:]
+selected_process = st.selectbox("Please select the Process", process)
+
+selected_material = st.selectbox(
+    "Please select the Material",
+    [m for m in process_sheet_df[selected_process].dropna()]
+)
 
 selected_region = st.radio("Please select the Region", ["United States"])
 
+# Form inputs
 try:
     with st.form("parameters"):
         col1, col2, col3 = st.columns(3)
         with col1:
-            bounding_box_x = st.text_input("Dim in X (in mm)", None, key="x_input", placeholder=0)
+            bounding_box_x = st.text_input("Dim in X (mm)", "0")
         with col2:
-            bounding_box_y = st.text_input("Dim in Y (in mm)", None, key="y_input", placeholder=0)
+            bounding_box_y = st.text_input("Dim in Y (mm)", "0")
         with col3:
-            bounding_box_z = st.text_input("Dim in Z (in mm)", None, key="z_input", placeholder=0)
+            bounding_box_z = st.text_input("Dim in Z (mm)", "0")
 
-        col1, col2, col3 = st.columns(3)
+        # Categories
         with st.expander("Machining Maestros"):
             edm = st.checkbox("EDM")
             Loves_Plastic = st.checkbox("Loves Plastic")
             Hard_Metals = st.checkbox("Hard Metals")
             Rare_Materials = st.checkbox("Rare Materials")
-            tight_tolerance_plastics = st.checkbox("tight tolerance plastics")
-            tight_tolerance_metals = st.checkbox("tight tolerance metals")
-
-        with st.expander("Speedy Squad"):
-            Quick_LT = st.checkbox("Quick LT")
-            Production_Qty = st.checkbox("Production Qty")
-            Complex_Job = st.checkbox("Complex Job")
-            hardware_install = st.checkbox("hardware install")
-            multi_axis_machine = st.checkbox("multi axis machine")
-            Quick_SLA = st.checkbox("Quick SLA")
-
-        with st.expander("Compliance Cowboys"):
-            cmm_inspection = st.checkbox("CMM inspection")
-            ISO_9001 = st. checkbox("ISO 9001")
-            AS9100D = st.checkbox("AS9100D")
-            ISO_13485 = st.checkbox("ISO 13485")
-            ITAR = st.checkbox("ITAR")
-
-        no_post_process = st.checkbox("No post process")
-
-        # Add a dropdown for post process selection
-        selected_finish = None
-        if not no_post_process:
-            selected_finish = st.selectbox('Please select the Post Process',
-                                           [finish for finish in finish_df[selected_process].dropna()])
-
-        submitted = st.form_submit_button("Submit")
-
-        if submitted:
-            # Filter data based on the selected process
-            process_filtered_df = main_df[main_df["Process offered"] == selected_process]
-            material_filtered_mp = process_filtered_df[process_filtered_df[selected_material] == True]
-
-            # Apply the bounding box filter
-            bounding_box_query = (material_filtered_mp["Bounding box [x]"] >= float(bounding_box_x)) & \
-                                 (material_filtered_mp["Bounding box [y]"] >= float(bounding_box_y)) & \
-                                 (material_filtered_mp["Bounding box [z]"] >= float(bounding_box_z))
-            bounding_box_filtered_df = material_filtered_mp[bounding_box_query]
-
-            # Apply checkbox conditions
-            if hardware_install:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["hardware install"] == True]
-
-            if multi_axis_machine:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["multi axis machine"] == True]
-
-            if cmm_inspection:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["CMM inspection"] == True]
-
-            if tight_tolerance_plastics:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["tight tolerance plastics"] == True]
-
-            if tight_tolerance_metals:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["tight tolerance metals"] == True]
-
-            if edm:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["EDM"] == True]
-
-            if Quick_LT:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Quick LT"] == True]
-
-            if Production_Qty:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Production Qty"] == True]
-
-            if Complex_Job:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Complex Job"] == True]
-
-            if Loves_Plastic:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Loves Plastic"] == True]
-
-            if Hard_Metals:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Hard Metals"] == True]
-
-            if Rare_Materials:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Rare Materials"] == True]
-
-            if Quick_SLA:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["Quick SLA"] == True]
-
-            if ISO_9001:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["ISO 9001"] == True]
-
-            if AS9100D:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["AS9100D"] == True]
-
-            if ISO_13485:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["ISO 13485"] == True]
-
-            if ITAR:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df["ITAR"] == True]
-
-            # Apply post process filter if "No post process" is not checked and a post process is selected
-            if selected_finish:
-                bounding_box_filtered_df = bounding_box_filtered_df[bounding_box_filtered_df[selected_finish] == True]
-
-            # Select only required columns for display
-            display_columns = ['MP name', 'Email', 'Phone No.', 'Notes']
-            bounding_box_filtered_df = bounding_box_filtered_df[display_columns]
-
-            # Limit the output to only 4 results
-            bounding_box_filtered_df = bounding_box_filtered_df.sample(frac=1).head(4)
-
-            # Display filtered results
-            if not bounding_box_filtered_df.empty:
-                st.write("MP's Recommended :face_with_monocle:")
-                st.table(bounding_box_filtered_df)
-                st.write("Select 1-2 MPs and cross check the selection with Sara :woman:")
-
-            else:
-                st.write("No data found matching the criteria.")
-
-    # Independent Search Bar for MP Name and Email
-    st.write("### Search MP by Name")
-    mp_name_search = st.text_input("Enter MP name to search")
-
-    # Search for the MP email by name (operates separately)
-    if mp_name_search:
-        search_result = main_df[main_df['MP name'].str.contains(mp_name_search, case=False)]
-        if not search_result.empty:
-            st.write(f"Email for {mp_name_search}:")
-            st.write(search_result[['MP name', 'Email']])
-        else:
-            st.write(f"No MP found with the name: {mp_name_search}")
-
-
-
-except Exception as e:
-    st.write("An error occurred:", e)
-    st.write("Please input the parameters correctly")
+            tight_tolerance_plastics = st.checkbox("tight tolerance plas
