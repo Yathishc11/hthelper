@@ -9,7 +9,7 @@ decorator==5.1.1
 
 # DuckDB + PyArrow compatible versions
 duckdb==0.10.2
-pyarrow==14.0.2
+pyarrow==15.0.0
 
 # Data + numerical
 numpy==1.26.3
