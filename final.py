@@ -1,8 +1,8 @@
 import ssl
-ssl._create_default_https_context = ssl._create_unverified_context
 import streamlit as st
 import pandas as pd
-from streamlit_gsheets import GSheetsConnection
+from google.oauth2.service_account import Credentials
+from googleapiclient.discovery import build
 
 # Set the page layout to wide
 st.set_page_config(layout="wide")
