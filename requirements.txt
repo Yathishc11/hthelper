@@ -1,7 +1,7 @@
 # -------------------------
 # Core app / Streamlit
 # -------------------------
-streamlit==1.32.0
+streamlit==1.37.0
 st-gsheets-connection==0.1.0
 gspread>=5.8.0,<6
 altair==5.2.0
@@ -10,8 +10,8 @@ validators==0.22.0
 # -------------------------
 # Data & numerics
 # -------------------------
-numpy==2.2.0
-pandas==2.2.3
+numpy>=1.26.4
+pandas>=2.2.2
 duckdb==0.10.3
 python-dateutil==2.8.2
 pytz==2023.3.post1
@@ -20,9 +20,9 @@ tzlocal==5.2
 # -------------------------
 # Google APIs (Sheets via service account)
 # -------------------------
-google-api-python-client==2.131.0
-google-auth==2.26.2
-google-auth-httplib2==0.2.0
+google-api-python-client>=2.131.0
+google-auth>=2.26.2
+google-auth-httplib2>=0.2.0
 httplib2==0.22.0
 rsa==4.9
 # -------------------------
